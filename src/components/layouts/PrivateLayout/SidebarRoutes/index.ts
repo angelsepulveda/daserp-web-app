@@ -1,1 +1,2 @@
-export * from './SidebarRoutes';
+export * from './SidebarRoutesDesktop';
+export * from './SidebarRoutesMobile';

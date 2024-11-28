@@ -17,14 +17,13 @@ export const MenuItem: FC<{ item: TMenuItem; isSubmenu?: boolean }> = ({
       <div className={`${isSubmenu ? 'ml-4' : ''}`}>
         <Button
           variant="ghost"
-          className="w-full justify-between font-normal"
+          className="w-full justify-between font-normal hover:bg-primary hover:text-primary-foreground"
           onClick={() => setIsOpen(!isOpen)}
         >
           <span className="flex items-center">
             {item.icon}
             <span className="ml-2">{item.title}</span>
           </span>
-          {/* eslint-disable-next-line react/jsx-no-undef */}
           {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </Button>
         {isOpen && (
@@ -41,7 +40,7 @@ export const MenuItem: FC<{ item: TMenuItem; isSubmenu?: boolean }> = ({
   return (
     <Button
       variant="ghost"
-      className={`w-full justify-start font-normal ${isSubmenu ? 'ml-4' : ''}`}
+      className={`w-full justify-start font-normal hover:bg-primary hover:text-primary-foreground ${isSubmenu ? 'ml-4' : ''}`}
       asChild
     >
       <Link href={item.href || '#'}>
