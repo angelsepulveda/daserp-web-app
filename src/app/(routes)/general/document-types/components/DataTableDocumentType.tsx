@@ -8,6 +8,8 @@ import {
   ColumnDef,
   flexRender,
   getPaginationRowModel,
+  SortingState,
+  getSortedRowModel,
 } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -19,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Edit, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Edit, Trash2 } from 'lucide-react';
 import { DataTableProps, DocumentType } from '@/types/documentType';
 import { fetchDocumentType } from '@/services/General/documentTypeService';
 
@@ -28,30 +30,82 @@ const ITEMS_PER_PAGE = 10;
 export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const { data, error, isLoading } = useSWR(
     [`users`, page, ITEMS_PER_PAGE, search],
-    () => fetchDocumentType(page, ITEMS_PER_PAGE, search),
+    () =>
+      fetchDocumentType(
+        page,
+        ITEMS_PER_PAGE,
+        search,
+        sorting.length > 0 ? (sorting[0].id as string) : 'Name',
+        sorting.length > 0 ? (sorting[0].desc ? 'desc' : 'asc') : 'asc',
+      ),
     { keepPreviousData: true },
   );
 
   const columns = useMemo<ColumnDef<DocumentType>[]>(
     () => [
       {
-        accessorKey: 'id',
-        header: 'ID',
-      },
-      {
         accessorKey: 'name',
-        header: 'Name',
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            >
+              Nombre
+              {column.getIsSorted() === 'asc' ? (
+                <ArrowUp className="ml-2 h-4 w-4" />
+              ) : column.getIsSorted() === 'desc' ? (
+                <ArrowDown className="ml-2 h-4 w-4" />
+              ) : (
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              )}
+            </Button>
+          );
+        },
       },
       {
-        accessorKey: 'email',
-        header: 'Email',
+        accessorKey: 'code',
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            >
+              Código
+              {column.getIsSorted() === 'asc' ? (
+                <ArrowUp className="ml-2 h-4 w-4" />
+              ) : column.getIsSorted() === 'desc' ? (
+                <ArrowDown className="ml-2 h-4 w-4" />
+              ) : (
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              )}
+            </Button>
+          );
+        },
       },
       {
-        accessorKey: 'role',
-        header: 'Role',
+        accessorKey: 'description',
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            >
+              Descripción
+              {column.getIsSorted() === 'asc' ? (
+                <ArrowUp className="ml-2 h-4 w-4" />
+              ) : column.getIsSorted() === 'desc' ? (
+                <ArrowDown className="ml-2 h-4 w-4" />
+              ) : (
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              )}
+            </Button>
+          );
+        },
       },
       {
         id: 'actions',
@@ -59,16 +113,11 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
           const user = row.original;
           return (
             <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => onEdit(user)}
-                aria-label={`Edit ${user.name}`}
-              >
+              <Button size="icon" onClick={() => onEdit(user)} aria-label={`Edit ${user.name}`}>
                 <Edit className="h-4 w-4" />
               </Button>
               <Button
-                variant="outline"
+                variant="destructive"
                 size="icon"
                 onClick={() => onDelete(user)}
                 aria-label={`Delete ${user.name}`}
@@ -89,6 +138,11 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
   });
 
   const totalPages = Math.ceil((data?.total ?? 0) / ITEMS_PER_PAGE);
@@ -184,15 +238,16 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
         </Table>
       </div>
       <div className="flex items-center justify-center space-x-2">
-        <Button
-          onClick={() => setPage(Math.max(page - 1, 1))}
-          variant="outline"
-          className="h-10 w-10 p-0"
-          disabled={page === 1}
-          aria-label="Go to previous page"
-        >
-          ←
-        </Button>
+        {page > 1 && (
+          <Button
+            onClick={() => setPage(Math.max(page - 1, 1))}
+            variant="outline"
+            className="h-10 w-10 p-0"
+            aria-label="Go to previous page"
+          >
+            ←
+          </Button>
+        )}
         {renderPaginationButtons()}
       </div>
     </div>

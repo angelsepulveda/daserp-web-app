@@ -1,32 +1,19 @@
 import { DocumentType } from '@/types/documentType';
-
-const mockData: DocumentType[] = Array.from({ length: 150 }, (_, i) => ({
-  id: i + 1,
-  name: `User ${i + 1}`,
-  email: `user${i + 1}@example.com`,
-  role: i % 2 === 0 ? 'Admin' : 'User',
-}));
+import { apiService } from '@/services/apiService';
+import { BasePagination } from '@/types/basePagination';
 
 export async function fetchDocumentType(
   page: number,
   pageSize: number,
   search: string,
+  sortField: string | null,
+  sortOrder: 'asc' | 'desc' | null,
 ): Promise<{ documentTypes: DocumentType[]; total: number }> {
-  await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API delay
+  const apiUrl = `https://localhost:7035/api/document-types?PageIndex=${page}&PageSize=${pageSize}&Order=${sortOrder}&Sort=${sortField}&search=${encodeURIComponent(
+    search,
+  )}`;
 
-  let filteredData = mockData;
-  if (search) {
-    filteredData = mockData.filter(
-      (documentType) =>
-        documentType.name.toLowerCase().includes(search.toLowerCase()) ||
-        documentType.email.toLowerCase().includes(search.toLowerCase()),
-    );
-  }
-
-  const total = filteredData.length;
-  const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
-
-  return { documentTypes: paginatedData, total };
+  const response = await apiService<BasePagination<DocumentType>>(apiUrl, 'GET');
+  const { data, count } = response;
+  return { documentTypes: data, total: count };
 }
