@@ -2,6 +2,7 @@
 
 import { SidebarRoutesMobile } from '@/components';
 import { UserProfileDropdown } from '@/components/layouts/PrivateLayout/Navbar/UserProfileDropdown';
+import { ModeToggle } from '@/components/layouts/PrivateLayout/Navbar/ModeToggle';
 
 export const Navbar = () => {
   return (
@@ -9,7 +10,10 @@ export const Navbar = () => {
       <div className="flex items-center">
         <SidebarRoutesMobile />
       </div>
-      <UserProfileDropdown />
+      <div className="ml-auto flex items-center gap-4">
+        <ModeToggle />
+        <UserProfileDropdown />
+      </div>
     </header>
   );
 };

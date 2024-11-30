@@ -28,15 +28,15 @@ export const UserProfileDropdown = () => {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuItem>
           <User className="mr-2 h-4 w-4" />
-          <span>View Profile</span>
+          <span>Ver perfil</span>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Globe className="mr-2 h-4 w-4" />
-          <span>Language</span>
+          <span>Idioma</span>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <span>Cerrar sesión</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
