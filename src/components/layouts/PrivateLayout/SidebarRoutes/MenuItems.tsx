@@ -8,53 +8,13 @@ export const menuItems: TMenuItem[] = [
     href: '/dashboard',
   },
   {
-    title: 'User Management',
-    icon: <Users className="h-4 w-4" />,
-    submenu: [
-      {
-        title: 'All Users',
-        href: '/users',
-      },
-      {
-        title: 'Add User',
-        href: '/users/add',
-      },
-      {
-        title: 'User Roles',
-        href: '/users/roles',
-      },
-    ],
-  },
-  {
-    title: 'Content',
-    icon: <FileText className="h-4 w-4" />,
-    submenu: [
-      {
-        title: 'Pages',
-        href: '/content/pages',
-      },
-      {
-        title: 'Articles',
-        href: '/content/articles',
-      },
-      {
-        title: 'Categories',
-        submenu: [
-          {
-            title: 'Main Categories',
-            href: '/content/categories/main',
-          },
-          {
-            title: 'Subcategories',
-            href: '/content/categories/sub',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: 'Settings',
+    title: 'Configuraciones',
     icon: <Settings className="h-4 w-4" />,
-    href: '/settings',
+    submenu: [
+      {
+        title: 'Tipos de documentos',
+        href: '/general/document-types',
+      },
+    ],
   },
 ];

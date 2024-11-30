@@ -4,3 +4,4 @@ export * from './input';
 export * from './scroll-area';
 export * from './dropdown-menu';
 export * from './avatar';
+export * from './table';

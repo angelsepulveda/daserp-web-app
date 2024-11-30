@@ -36,7 +36,7 @@ export const UserProfileDropdown = () => {
         </DropdownMenuItem>
         <DropdownMenuItem>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Cerrar sesión</span>
+          <span>Cerrar sesión/</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
