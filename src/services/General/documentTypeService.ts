@@ -17,3 +17,11 @@ export async function fetchDocumentType(
   const { data, count } = response;
   return { documentTypes: data, total: count };
 }
+
+export async function createDocumentType(
+  docueentType: Omit<DocumentType, 'id'>,
+): Promise<DocumentType> {}
+
+export async function updateDocumentType(documentType: DocumentType): Promise<DocumentType> {}
+
+export async function deleteUser(id: string): Promise<void> {}

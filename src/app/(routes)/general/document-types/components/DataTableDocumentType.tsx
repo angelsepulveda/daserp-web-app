@@ -21,9 +21,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ArrowDown, ArrowUp, ArrowUpDown, Edit, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Edit, PlusCircle, Trash2 } from 'lucide-react';
 import { DataTableProps, DocumentType } from '@/types/documentType';
-import { fetchDocumentType } from '@/services/General/documentTypeService';
+import {
+  createDocumentType,
+  fetchDocumentType,
+  updateDocumentType,
+} from '@/services/General/documentTypeService';
+import { DocumentTypeModal } from '@/app/(routes)/general/document-types/components/DocumentTypeModal';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -31,6 +36,10 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedDocumentType, setSelectedDocumentType] = useState<DocumentType | undefined>(
+    undefined,
+  );
 
   const { data, error, isLoading } = useSWR(
     [`users`, page, ITEMS_PER_PAGE, search],
@@ -44,6 +53,25 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
       ),
     { keepPreviousData: true },
   );
+
+  const handleCreateDocumentType = () => {
+    setSelectedDocumentType(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEditDocumentType = (documentType: DocumentType) => {
+    setSelectedDocumentType(documentType);
+    setIsModalOpen(true);
+  };
+
+  const handleModalSubmit = async (documentType: Omit<DocumentType, 'id'> & { id?: string }) => {
+    if (user.id) {
+      await updateDocumentType(documentType as DocumentType);
+    } else {
+      await createDocumentType(documentType);
+    }
+    setIsModalOpen(false);
+  };
 
   const columns = useMemo<ColumnDef<DocumentType>[]>(
     () => [
@@ -194,13 +222,18 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
 
   return (
     <div className="space-y-4">
-      <Input
-        type="text"
-        placeholder="Buscar..."
-        value={search}
-        onChange={handleSearchChange}
-        className="max-w-sm"
-      />
+      <div className="flex items-center justify-between">
+        <Input
+          type="text"
+          placeholder="Search users..."
+          value={search}
+          onChange={handleSearchChange}
+          className="max-w-sm"
+        />
+        <Button onClick={handleCreateDocumentType}>
+          <PlusCircle className="mr-2 h-4 w-4" /> Crear tipo de documento
+        </Button>
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -250,6 +283,12 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
         )}
         {renderPaginationButtons()}
       </div>
+      <DocumentTypeModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleModalSubmit}
+        documentType={selectedDocumentType}
+      />
     </div>
   );
 };

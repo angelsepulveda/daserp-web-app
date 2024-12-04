@@ -5,3 +5,5 @@ export * from './scroll-area';
 export * from './dropdown-menu';
 export * from './avatar';
 export * from './table';
+export * from './dialog';
+export * from './label';
