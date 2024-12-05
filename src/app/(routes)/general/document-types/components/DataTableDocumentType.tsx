@@ -25,10 +25,12 @@ import { ArrowDown, ArrowUp, ArrowUpDown, Edit, PlusCircle, Trash2 } from 'lucid
 import { DataTableProps, DocumentType } from '@/types/documentType';
 import {
   createDocumentType,
+  deleteDocumentType,
   fetchDocumentType,
   updateDocumentType,
 } from '@/services/General/documentTypeService';
 import { DocumentTypeModal } from '@/app/(routes)/general/document-types/components/DocumentTypeModal';
+import { DeleteConfirmationDialog } from '@/components';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -40,6 +42,8 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
   const [selectedDocumentType, setSelectedDocumentType] = useState<DocumentType | undefined>(
     undefined,
   );
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+  const [documentTypeToDelete, setDocumentTypeToDelete] = useState<DocumentType | null>(null);
 
   const { data, error, isLoading } = useSWR(
     [`users`, page, ITEMS_PER_PAGE, search],
@@ -65,12 +69,25 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
   };
 
   const handleModalSubmit = async (documentType: Omit<DocumentType, 'id'> & { id?: string }) => {
-    if (user.id) {
+    if (documentType.id) {
       await updateDocumentType(documentType as DocumentType);
     } else {
       await createDocumentType(documentType);
     }
     setIsModalOpen(false);
+  };
+
+  const handleDeleteDocumentType = async (documentType: DocumentType) => {
+    setDocumentTypeToDelete(documentType);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (documentTypeToDelete) {
+      await deleteDocumentType(documentTypeToDelete.id);
+      setIsDeleteDialogOpen(false);
+      setDocumentTypeToDelete(null);
+    }
   };
 
   const columns = useMemo<ColumnDef<DocumentType>[]>(
@@ -138,17 +155,21 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
       {
         id: 'actions',
         cell: ({ row }) => {
-          const user = row.original;
+          const documentType = row.original;
           return (
             <div className="flex space-x-2">
-              <Button size="icon" onClick={() => onEdit(user)} aria-label={`Edit ${user.name}`}>
+              <Button
+                size="icon"
+                onClick={() => handleEditDocumentType(documentType)}
+                aria-label={`Edit ${documentType.name}`}
+              >
                 <Edit className="h-4 w-4" />
               </Button>
               <Button
                 variant="destructive"
                 size="icon"
-                onClick={() => onDelete(user)}
-                aria-label={`Delete ${user.name}`}
+                onClick={() => handleDeleteDocumentType(documentType)}
+                aria-label={`Delete ${documentType.name}`}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -288,6 +309,12 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleModalSubmit}
         documentType={selectedDocumentType}
+      />
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        text={`¿Estás seguro de que deseas eliminar el registro ${documentTypeToDelete?.name}? Esta acción no se puede deshacer.`}
       />
     </div>
   );

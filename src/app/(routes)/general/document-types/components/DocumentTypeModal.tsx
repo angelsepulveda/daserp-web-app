@@ -64,11 +64,11 @@ export const DocumentTypeModal = ({
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmitForm)}>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+            <div className="grid grid-cols-1 gap-2">
+              <Label htmlFor="name" className="font-medium">
                 Nombre
               </Label>
-              <div className="col-span-3">
+              <div>
                 <Controller
                   name="name"
                   control={control}
@@ -89,11 +89,11 @@ export const DocumentTypeModal = ({
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Codigo
+            <div className="grid grid-cols-1 gap-2">
+              <Label htmlFor="name" className="font-medium">
+                Código
               </Label>
-              <div className="col-span-3">
+              <div>
                 <Controller
                   name="code"
                   control={control}
@@ -114,11 +114,11 @@ export const DocumentTypeModal = ({
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">
-                Descripcion
+            <div className="grid grid-cols-1 gap-2">
+              <Label htmlFor="description" className="font-medium">
+                Descripción
               </Label>
-              <div className="col-span-3">
+              <div>
                 <Controller
                   name="description"
                   control={control}
@@ -134,7 +134,7 @@ export const DocumentTypeModal = ({
                   )}
                 />
                 {errors.description && (
-                  <p id="email-error" className="mt-1 text-sm text-red-500">
+                  <p id="description-error" className="mt-1 text-sm text-red-500">
                     {errors.description.message}
                   </p>
                 )}

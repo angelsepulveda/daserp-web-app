@@ -18,10 +18,17 @@ export async function fetchDocumentType(
   return { documentTypes: data, total: count };
 }
 
-export async function createDocumentType(
-  docueentType: Omit<DocumentType, 'id'>,
-): Promise<DocumentType> {}
+export async function createDocumentType(documentType: Omit<DocumentType, 'id'>): Promise<void> {
+  const apiUrl = 'https://localhost:7035/api/document-types';
+  await apiService(apiUrl, 'POST', documentType);
+}
 
-export async function updateDocumentType(documentType: DocumentType): Promise<DocumentType> {}
+export async function updateDocumentType(documentType: DocumentType): Promise<void> {
+  const apiUrl = 'https://localhost:7035/api/document-types';
+  await apiService(apiUrl, 'PUT', documentType);
+}
 
-export async function deleteUser(id: string): Promise<void> {}
+export async function deleteDocumentType(id: string): Promise<void> {
+  const apiUrl = `https://localhost:7035/api/document-types/${id}`;
+  await apiService(apiUrl, 'DELETE');
+}
