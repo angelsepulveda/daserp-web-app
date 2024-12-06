@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { ReactNode } from 'react';
-import { ThemeProvider } from '@/components';
+import { ThemeProvider, Toaster } from '@/components';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -36,6 +36,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );

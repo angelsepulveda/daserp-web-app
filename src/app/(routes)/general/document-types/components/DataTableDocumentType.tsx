@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, ChangeEvent } from 'react';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import {
   useReactTable,
   getCoreRowModel,
@@ -26,11 +26,14 @@ import { DataTableProps, DocumentType } from '@/types/documentType';
 import {
   createDocumentType,
   deleteDocumentType,
+  EnumApiDocumentType,
   fetchDocumentType,
   updateDocumentType,
 } from '@/services/General/documentTypeService';
 import { DocumentTypeModal } from '@/app/(routes)/general/document-types/components/DocumentTypeModal';
 import { DeleteConfirmationDialog } from '@/components';
+import { toast } from '@/hooks';
+import useSWRMutation from 'swr/mutation';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -44,9 +47,23 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
   );
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const [documentTypeToDelete, setDocumentTypeToDelete] = useState<DocumentType | null>(null);
+  const { trigger: deleteRegister, isMutating: isDeleting } = useSWRMutation(
+    [EnumApiDocumentType.fetchDocumentType, page, ITEMS_PER_PAGE, search],
+    (_, { arg }: { arg: string }) => deleteDocumentType(arg),
+  );
+
+  const { trigger: editRegister, isMutating: isEditing } = useSWRMutation(
+    [EnumApiDocumentType.fetchDocumentType, page, ITEMS_PER_PAGE, search],
+    (_, { arg }: { arg: DocumentType }) => updateDocumentType(arg),
+  );
+
+  const { trigger: createRegister, isMutating: isCreating } = useSWRMutation(
+    [EnumApiDocumentType.fetchDocumentType, page, ITEMS_PER_PAGE, search],
+    (_, { arg }: { arg: Omit<DocumentType, 'id'> }) => createDocumentType(arg),
+  );
 
   const { data, error, isLoading } = useSWR(
-    [`users`, page, ITEMS_PER_PAGE, search],
+    [EnumApiDocumentType.fetchDocumentType, page, ITEMS_PER_PAGE, search],
     () =>
       fetchDocumentType(
         page,
@@ -70,11 +87,44 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
 
   const handleModalSubmit = async (documentType: Omit<DocumentType, 'id'> & { id?: string }) => {
     if (documentType.id) {
-      await updateDocumentType(documentType as DocumentType);
+      editRegister(documentType as DocumentType)
+        .then(() => {
+          toast({
+            title: 'Tipo de documento actualizado',
+            description: `${documentType.name} se ha actualizado correctamente.`,
+            variant: 'success',
+          });
+          setIsModalOpen(false);
+        })
+        .catch((err) => {
+          toast({
+            title: 'Error',
+            description: 'Failed to delete user. Please try again.',
+            variant: 'error',
+          });
+          setIsModalOpen(false);
+          console.log(err);
+        });
     } else {
-      await createDocumentType(documentType);
+      createRegister(documentType)
+        .then(() => {
+          toast({
+            title: 'Tipo de documento creado',
+            description: `${documentType.name} se ha creado correctamente.`,
+            variant: 'success',
+          });
+          setIsModalOpen(false);
+        })
+        .catch((err) => {
+          toast({
+            title: 'Error',
+            description: 'Failed to delete user. Please try again.',
+            variant: 'error',
+          });
+          setIsModalOpen(false);
+          console.log(err);
+        });
     }
-    setIsModalOpen(false);
   };
 
   const handleDeleteDocumentType = async (documentType: DocumentType) => {
@@ -84,9 +134,26 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
 
   const handleConfirmDelete = async () => {
     if (documentTypeToDelete) {
-      await deleteDocumentType(documentTypeToDelete.id);
-      setIsDeleteDialogOpen(false);
-      setDocumentTypeToDelete(null);
+      deleteRegister(documentTypeToDelete.id)
+        .then(() => {
+          toast({
+            title: 'Tipo de documento eliminado',
+            description: `${documentTypeToDelete.name} has been successfully deleted.`,
+            variant: 'success',
+          });
+          setIsDeleteDialogOpen(false);
+          setDocumentTypeToDelete(null);
+        })
+        .catch((err) => {
+          toast({
+            title: 'Error',
+            description: 'Failed to delete user. Please try again.',
+            variant: 'error',
+          });
+          setIsDeleteDialogOpen(false);
+          setDocumentTypeToDelete(null);
+          console.log(err);
+        });
     }
   };
 
@@ -314,6 +381,7 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
         onConfirm={handleConfirmDelete}
+        loading={isDeleting}
         text={`¿Estás seguro de que deseas eliminar el registro ${documentTypeToDelete?.name}? Esta acción no se puede deshacer.`}
       />
     </div>

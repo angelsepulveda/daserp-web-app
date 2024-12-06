@@ -2,6 +2,13 @@ import { DocumentType } from '@/types/documentType';
 import { apiService } from '@/services/apiService';
 import { BasePagination } from '@/types/basePagination';
 
+export enum EnumApiDocumentType {
+  fetchDocumentType = 'document-types',
+  createDocumentType = 'document-types',
+  updateDocumentType = 'document-types',
+  deleteDocumentType = 'document-types',
+}
+
 export async function fetchDocumentType(
   page: number,
   pageSize: number,
@@ -9,7 +16,7 @@ export async function fetchDocumentType(
   sortField: string | null,
   sortOrder: 'asc' | 'desc' | null,
 ): Promise<{ documentTypes: DocumentType[]; total: number }> {
-  const apiUrl = `https://localhost:7035/api/document-types?PageIndex=${page}&PageSize=${pageSize}&Order=${sortOrder}&Sort=${sortField}&search=${encodeURIComponent(
+  const apiUrl = `https://localhost:7035/api/${EnumApiDocumentType.fetchDocumentType}?PageIndex=${page}&PageSize=${pageSize}&Order=${sortOrder}&Sort=${sortField}&search=${encodeURIComponent(
     search,
   )}`;
 

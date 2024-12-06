@@ -7,3 +7,5 @@ export * from './avatar';
 export * from './table';
 export * from './dialog';
 export * from './label';
+export * from './toast';
+export * from './toaster';

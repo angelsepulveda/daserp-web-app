@@ -7,12 +7,14 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 
 type TDeleteConfirmationDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   text: string;
+  loading?: boolean;
 };
 
 export function DeleteConfirmationDialog({
@@ -20,6 +22,7 @@ export function DeleteConfirmationDialog({
   onClose,
   onConfirm,
   text,
+  loading,
 }: TDeleteConfirmationDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -32,9 +35,16 @@ export function DeleteConfirmationDialog({
           <Button variant="outline" onClick={onClose}>
             Cancelar
           </Button>
-          <Button variant="destructive" onClick={onConfirm}>
-            Eliminar
-          </Button>
+          {loading ? (
+            <Button disabled>
+              <Loader2 className="animate-spin" />
+              Cargando
+            </Button>
+          ) : (
+            <Button variant="destructive" onClick={onConfirm}>
+              Eliminar
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
