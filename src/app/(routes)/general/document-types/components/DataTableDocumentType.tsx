@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, ChangeEvent } from 'react';
-import useSWR, { useSWRConfig } from 'swr';
+import useSWR from 'swr';
 import {
   useReactTable,
   getCoreRowModel,
@@ -48,17 +48,17 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const [documentTypeToDelete, setDocumentTypeToDelete] = useState<DocumentType | null>(null);
   const { trigger: deleteRegister, isMutating: isDeleting } = useSWRMutation(
-    [EnumApiDocumentType.fetchDocumentType, page, ITEMS_PER_PAGE, search],
+    [EnumApiDocumentType.fetchDocumentType, 1, ITEMS_PER_PAGE, search],
     (_, { arg }: { arg: string }) => deleteDocumentType(arg),
   );
 
   const { trigger: editRegister, isMutating: isEditing } = useSWRMutation(
-    [EnumApiDocumentType.fetchDocumentType, page, ITEMS_PER_PAGE, search],
+    [EnumApiDocumentType.fetchDocumentType, 1, ITEMS_PER_PAGE, search],
     (_, { arg }: { arg: DocumentType }) => updateDocumentType(arg),
   );
 
   const { trigger: createRegister, isMutating: isCreating } = useSWRMutation(
-    [EnumApiDocumentType.fetchDocumentType, page, ITEMS_PER_PAGE, search],
+    [EnumApiDocumentType.fetchDocumentType, 1, ITEMS_PER_PAGE, search],
     (_, { arg }: { arg: Omit<DocumentType, 'id'> }) => createDocumentType(arg),
   );
 
@@ -95,6 +95,7 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
             variant: 'success',
           });
           setIsModalOpen(false);
+          setPage(1);
         })
         .catch((err) => {
           toast({
@@ -114,6 +115,7 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
             variant: 'success',
           });
           setIsModalOpen(false);
+          setPage(1);
         })
         .catch((err) => {
           toast({
@@ -143,6 +145,7 @@ export const DataTableDocumentType = ({ onEdit, onDelete }: DataTableProps) => {
           });
           setIsDeleteDialogOpen(false);
           setDocumentTypeToDelete(null);
+          setPage(1);
         })
         .catch((err) => {
           toast({
