@@ -14,12 +14,14 @@ import {
   Input,
   Label,
 } from '@/components';
+import { Loader2 } from 'lucide-react';
 
 type TDocumentTypeModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (documentType: Omit<DocumentType, 'id'> & { id?: string }) => void;
   documentType?: DocumentType;
+  loading: boolean;
 };
 
 export const DocumentTypeModal = ({
@@ -27,6 +29,7 @@ export const DocumentTypeModal = ({
   onClose,
   onSubmit,
   documentType,
+  loading,
 }: TDocumentTypeModalProps) => {
   const {
     control,
@@ -42,16 +45,9 @@ export const DocumentTypeModal = ({
     },
   });
 
-  useEffect(() => {
-    if (documentType) {
-      reset(documentType);
-    } else {
-      reset({ name: '', code: '', description: '' });
-    }
-  }, [documentType, reset]);
-
   const onSubmitForm = (data: DocumentTypeFormData) => {
     onSubmit(documentType ? ({ ...data, id: documentType.id } as DocumentType) : data);
+    reset({ name: '', code: '', description: '' });
   };
 
   return (
@@ -142,7 +138,14 @@ export const DocumentTypeModal = ({
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">{documentType ? 'Guardar cambios' : 'Crear'}</Button>
+            {loading ? (
+              <Button disabled>
+                <Loader2 className="animate-spin" />
+                Cargando
+              </Button>
+            ) : (
+              <Button type="submit">{documentType ? 'Guardar cambios' : 'Crear'}</Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>

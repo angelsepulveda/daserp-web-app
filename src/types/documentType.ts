@@ -15,10 +15,10 @@ export type DataTableProps = {
 export const documentTypeSchema = z.object({
   name: z
     .string()
-    .min(2, 'Name must be at least 2 characters')
-    .max(20, 'Name must be at most 50 characters'),
-  code: z.string().max(10, 'Name must be at most 10 characters'),
-  description: z.string().max(256, 'Name must be at most 256 characters'),
+    .min(2, 'El nombre debe tener como minimo 2 caracteres')
+    .max(20, 'El nombre no debe superar los 20 caracteres'),
+  code: z.string().max(10, 'El codigo no debe superar los 10 caracteres'),
+  description: z.string().max(256, 'La descripcion no debe superar los 256 caracteres'),
 });
 
 export type DocumentTypeFormData = z.infer<typeof documentTypeSchema>;

@@ -9,3 +9,4 @@ export * from './dialog';
 export * from './label';
 export * from './toast';
 export * from './toaster';
+export * from './card';

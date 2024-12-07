@@ -11,7 +11,7 @@ export default function PrivateLayout({ children }: TPrivateLayoutProps) {
       <SidebarRoutesDesktop />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Navbar />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
+        <main className="container mx-auto p-4">{children}</main>
       </div>
     </div>
   );
