@@ -10,3 +10,4 @@ export * from './label';
 export * from './toast';
 export * from './toaster';
 export * from './card';
+export * from './skeleton';

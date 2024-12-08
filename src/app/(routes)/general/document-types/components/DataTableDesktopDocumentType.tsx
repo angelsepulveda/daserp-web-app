@@ -6,6 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableSkeleton,
 } from '@/components';
 import {
   ColumnDef,
@@ -26,6 +27,7 @@ type TDataTableDesktopDocumentTypeProps = {
   sorting: SortingState;
   handleEditDocumentType: (documentType: DocumentType) => void;
   handleDeleteDocumentType: (documentType: DocumentType) => void;
+  isLoading: boolean;
 };
 
 export const DataTableDesktopDocumentType = ({
@@ -34,6 +36,7 @@ export const DataTableDesktopDocumentType = ({
   sorting,
   handleDeleteDocumentType,
   handleEditDocumentType,
+  isLoading,
 }: TDataTableDesktopDocumentTypeProps) => {
   const columns = useMemo<ColumnDef<DocumentType>[]>(
     () => [
@@ -155,7 +158,9 @@ export const DataTableDesktopDocumentType = ({
         ))}
       </TableHeader>
       <TableBody>
-        {table.getRowModel().rows?.length ? (
+        {isLoading ? (
+          <TableSkeleton columns={columns.length} />
+        ) : table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
             <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
               {row.getVisibleCells().map((cell) => (

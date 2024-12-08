@@ -39,7 +39,6 @@ export const DocumentTypeContainer = () => {
   } = UseDocumentTypes();
 
   if (error) return <div>Failed to load</div>;
-  if (isLoading) return <div>Loading...</div>;
 
   return (
     <Card className="mx-auto w-full">
@@ -63,6 +62,7 @@ export const DocumentTypeContainer = () => {
           <div className="rounded-md border">
             <div className="hidden md:block">
               <DataTableDesktopDocumentType
+                isLoading={isLoading}
                 documentTypes={data?.documentTypes ?? []}
                 setSorting={setSorting}
                 sorting={sorting}
@@ -75,6 +75,7 @@ export const DocumentTypeContainer = () => {
                 documentTypes={data?.documentTypes ?? []}
                 onEdit={handleEditDocumentType}
                 onDelete={handleDeleteDocumentType}
+                isLoading={isLoading}
               />
             </div>
           </div>
