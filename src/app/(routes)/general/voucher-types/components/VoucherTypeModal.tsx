@@ -1,4 +1,4 @@
-import { DocumentType, DocumentTypeFormData, documentTypeSchema } from '@/types/documentType';
+import { documentTypeSchema } from '@/types/documentType';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -12,28 +12,29 @@ import {
   Label,
 } from '@/components';
 import { Loader2 } from 'lucide-react';
+import { TVoucherType, TVoucherTypeFormData } from '@/types';
 
-type TDocumentTypeModalProps = {
+type TVoucherTypeModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (documentType: Omit<DocumentType, 'id'> & { id?: string }) => void;
-  documentType?: DocumentType;
+  onSubmit: (voucherType: Omit<TVoucherType, 'id'> & { id?: string }) => void;
+  voucherType?: TVoucherType;
   loading: boolean;
 };
 
-export const DocumentTypeModal = ({
+export const VoucherTypeModal = ({
   isOpen,
   onClose,
   onSubmit,
-  documentType,
+  voucherType,
   loading,
-}: TDocumentTypeModalProps) => {
+}: TVoucherTypeModalProps) => {
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<DocumentTypeFormData>({
+  } = useForm<TVoucherTypeFormData>({
     resolver: zodResolver(documentTypeSchema),
     defaultValues: {
       name: '',
@@ -42,8 +43,8 @@ export const DocumentTypeModal = ({
     },
   });
 
-  const onSubmitForm = (data: DocumentTypeFormData) => {
-    onSubmit(documentType ? ({ ...data, id: documentType.id } as DocumentType) : data);
+  const onSubmitForm = (data: TVoucherTypeFormData) => {
+    onSubmit(voucherType ? ({ ...data, id: voucherType.id } as TVoucherType) : data);
     reset({ name: '', code: '', description: '' });
   };
 
@@ -52,7 +53,7 @@ export const DocumentTypeModal = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {documentType ? 'Editar tipo de documento' : 'Crear tipo de documento'}
+            {voucherType ? 'Editar tipo de comprobante' : 'Crear tipo de comprobante'}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmitForm)}>
@@ -141,7 +142,7 @@ export const DocumentTypeModal = ({
                 Cargando
               </Button>
             ) : (
-              <Button type="submit">{documentType ? 'Guardar cambios' : 'Crear'}</Button>
+              <Button type="submit">{voucherType ? 'Guardar cambios' : 'Crear'}</Button>
             )}
           </DialogFooter>
         </form>

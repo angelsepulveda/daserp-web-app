@@ -4,9 +4,6 @@ import { BasePagination } from '@/types/basePagination';
 
 export enum EnumApiDocumentType {
   fetchDocumentType = 'document-types',
-  createDocumentType = 'document-types',
-  updateDocumentType = 'document-types',
-  deleteDocumentType = 'document-types',
 }
 
 export async function fetchDocumentType(

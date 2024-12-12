@@ -15,6 +15,10 @@ export const menuItems: TMenuItem[] = [
         title: 'Tipos de documentos',
         href: '/general/document-types',
       },
+      {
+        title: 'Tipos de comprobantes',
+        href: '/general/voucher-types',
+      },
     ],
   },
 ];
