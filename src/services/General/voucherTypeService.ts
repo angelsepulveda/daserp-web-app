@@ -28,7 +28,7 @@ export async function createVoucharType(voucherType: Omit<TVoucherType, 'id'>): 
 }
 
 export async function updateVoucharType(voucherType: TVoucherType): Promise<void> {
-  const apiUrl = 'https://localhost:7035/api/vourcher-types';
+  const apiUrl = 'https://localhost:7035/api/voucher-types';
   await apiService(apiUrl, 'PUT', voucherType);
 }
 

@@ -12,6 +12,7 @@ import {
   Label,
 } from '@/components';
 import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
 
 type TDocumentTypeModalProps = {
   isOpen: boolean;
@@ -46,6 +47,14 @@ export const DocumentTypeModal = ({
     onSubmit(documentType ? ({ ...data, id: documentType.id } as DocumentType) : data);
     reset({ name: '', code: '', description: '' });
   };
+
+  useEffect(() => {
+    if (documentType) {
+      reset(documentType);
+    } else {
+      reset({ name: '', code: '', description: 'User' });
+    }
+  }, [documentType, reset]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

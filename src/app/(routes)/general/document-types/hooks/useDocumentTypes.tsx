@@ -100,6 +100,7 @@ export const UseDocumentTypes = () => {
           setPage(1);
         })
         .catch((err) => {
+          console.log(err);
           toast({
             title: 'Error',
             description: 'Ocurrio un error.',

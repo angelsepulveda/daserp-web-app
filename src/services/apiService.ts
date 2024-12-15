@@ -20,6 +20,10 @@ export async function apiService<T>(
       throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
 
+    if (response.status === 204) {
+      return true as T;
+    }
+
     return (await response.json()) as T;
   } catch (error) {
     console.error('Error al realizar la solicitud:', error);

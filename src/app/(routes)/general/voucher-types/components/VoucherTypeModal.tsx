@@ -13,6 +13,7 @@ import {
 } from '@/components';
 import { Loader2 } from 'lucide-react';
 import { TVoucherType, TVoucherTypeFormData } from '@/types';
+import { useEffect } from 'react';
 
 type TVoucherTypeModalProps = {
   isOpen: boolean;
@@ -47,6 +48,14 @@ export const VoucherTypeModal = ({
     onSubmit(voucherType ? ({ ...data, id: voucherType.id } as TVoucherType) : data);
     reset({ name: '', code: '', description: '' });
   };
+
+  useEffect(() => {
+    if (voucherType) {
+      reset(voucherType);
+    } else {
+      reset({ name: '', code: '', description: 'User' });
+    }
+  }, [voucherType, reset]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
