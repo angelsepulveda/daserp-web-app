@@ -1,51 +1,49 @@
 import { ChangeEvent, useState } from 'react';
 import { SortingState } from '@tanstack/react-table';
 import useSWRMutation from 'swr/mutation';
+import {
+  createCountry,
+  deleteCountry,
+  EnumApiCountry,
+  fetchCountry,
+  updateCountry,
+} from '@/services';
 import useSWR from 'swr';
 import { toast } from '@/hooks';
 import { Button } from '@/components';
-import { TVoucherType } from '@/types';
-import {
-  createVoucharType,
-  deleteVoucharType,
-  EnumApiVoucherType,
-  fetchVoucherType,
-  updateVoucharType,
-} from '@/services';
+import { TCountry } from '@/types/general/Address/country';
 
 const ITEMS_PER_PAGE = 10;
 
-export const UseVoucherTypes = () => {
+export const UseCountries = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedVoucherType, setSelectedVoucherType] = useState<TVoucherType | undefined>(
-    undefined,
-  );
+  const [selectedCountry, setSelectedCountry] = useState<TCountry | undefined>(undefined);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
-  const [voucherTypeToDelete, setVoucherTypeToDelete] = useState<TVoucherType | null>(null);
+  const [countryToDelete, setCountryToDelete] = useState<TCountry | null>(null);
   const [isModalCreating, setIsModalCreating] = useState<boolean>(false);
 
   const { trigger: deleteRegister, isMutating: isDeleting } = useSWRMutation(
-    [EnumApiVoucherType.fetchVoucharType, 1, ITEMS_PER_PAGE, search],
-    (_, { arg }: { arg: string }) => deleteVoucharType(arg),
+    [EnumApiCountry.endpoint, 1, ITEMS_PER_PAGE, search],
+    (_, { arg }: { arg: string }) => deleteCountry(arg),
   );
 
   const { trigger: editRegister, isMutating: isEditing } = useSWRMutation(
-    [EnumApiVoucherType.fetchVoucharType, 1, ITEMS_PER_PAGE, search],
-    (_, { arg }: { arg: TVoucherType }) => updateVoucharType(arg),
+    [EnumApiCountry.endpoint, 1, ITEMS_PER_PAGE, search],
+    (_, { arg }: { arg: TCountry }) => updateCountry(arg),
   );
 
   const { trigger: createRegister, isMutating: isCreating } = useSWRMutation(
-    [EnumApiVoucherType.fetchVoucharType, 1, ITEMS_PER_PAGE, search],
-    (_, { arg }: { arg: Omit<TVoucherType, 'id'> }) => createVoucharType(arg),
+    [EnumApiCountry.endpoint, 1, ITEMS_PER_PAGE, search],
+    (_, { arg }: { arg: Omit<TCountry, 'id'> }) => createCountry(arg),
   );
 
   const { data, error, isLoading } = useSWR(
-    [EnumApiVoucherType.fetchVoucharType, page, ITEMS_PER_PAGE, search],
+    [EnumApiCountry.endpoint, page, ITEMS_PER_PAGE, search],
     () =>
-      fetchVoucherType(
+      fetchCountry(
         page,
         ITEMS_PER_PAGE,
         search,
@@ -55,25 +53,25 @@ export const UseVoucherTypes = () => {
     { keepPreviousData: true },
   );
 
-  const handleCreateVoucherType = () => {
-    setSelectedVoucherType(undefined);
+  const handleCreateCountry = () => {
+    setSelectedCountry(undefined);
     setIsModalOpen(true);
     setIsModalCreating(true);
   };
 
-  const handleEditVoucherType = (voucherType: TVoucherType) => {
-    setSelectedVoucherType(voucherType);
+  const handleEditCountry = (country: TCountry) => {
+    setSelectedCountry(country);
     setIsModalOpen(true);
     setIsModalCreating(false);
   };
 
-  const handleModalSubmit = async (voucherType: Omit<TVoucherType, 'id'> & { id?: string }) => {
-    if (voucherType.id) {
-      editRegister(voucherType as TVoucherType)
+  const handleModalSubmit = async (country: Omit<TCountry, 'id'> & { id?: string }) => {
+    if (country.id) {
+      editRegister(country as TCountry)
         .then(() => {
           toast({
-            title: 'Tipo de comprobante actualizado',
-            description: `${voucherType.name} se ha actualizado correctamente.`,
+            title: 'País actualizado',
+            description: `${country.name} se ha actualizado correctamente.`,
             variant: 'success',
           });
           setIsModalOpen(false);
@@ -89,17 +87,18 @@ export const UseVoucherTypes = () => {
           console.log(err);
         });
     } else {
-      createRegister(voucherType)
+      createRegister(country)
         .then(() => {
           toast({
-            title: 'Tipo de comprobante creado',
-            description: `${voucherType.name} se ha creado correctamente.`,
+            title: 'País creado',
+            description: `${country.name} se ha creado correctamente.`,
             variant: 'success',
           });
           setIsModalOpen(false);
           setPage(1);
         })
         .catch((err) => {
+          console.log(err);
           toast({
             title: 'Error',
             description: 'Ocurrio un error.',
@@ -111,22 +110,22 @@ export const UseVoucherTypes = () => {
     }
   };
 
-  const handleDeleteVoucherType = async (voucherType: TVoucherType) => {
-    setVoucherTypeToDelete(voucherType);
+  const handleDeleteCountry = async (country: TCountry) => {
+    setCountryToDelete(country);
     setIsDeleteDialogOpen(true);
   };
 
   const handleConfirmDelete = async () => {
-    if (voucherTypeToDelete) {
-      deleteRegister(voucherTypeToDelete.id)
+    if (countryToDelete) {
+      deleteRegister(countryToDelete.id)
         .then(() => {
           toast({
-            title: 'Tipo de comprobante eliminado',
-            description: `${voucherTypeToDelete.name} se ha eliminado exitosamente.`,
+            title: 'País eliminado',
+            description: `${countryToDelete.name} se ha eliminado exitosamente.`,
             variant: 'success',
           });
           setIsDeleteDialogOpen(false);
-          setSelectedVoucherType(undefined);
+          setCountryToDelete(null);
           setPage(1);
         })
         .catch((err) => {
@@ -136,7 +135,7 @@ export const UseVoucherTypes = () => {
             variant: 'error',
           });
           setIsDeleteDialogOpen(false);
-          setSelectedVoucherType(undefined);
+          setCountryToDelete(null);
           console.log(err);
         });
     }
@@ -190,10 +189,10 @@ export const UseVoucherTypes = () => {
     renderPaginationButtons,
     handleSearchChange,
     handleConfirmDelete,
-    handleCreateVoucherType,
-    handleDeleteVoucherType,
+    handleCreateCountry,
+    handleDeleteCountry,
     handleModalSubmit,
-    handleEditVoucherType,
+    handleEditCountry,
     setSorting,
     isModalCreating,
     isModalOpen,
@@ -202,13 +201,13 @@ export const UseVoucherTypes = () => {
     isCreating,
     error,
     isLoading,
-    selectedVoucherType,
+    selectedCountry,
     isEditing,
     data,
     sorting,
     setPage,
     setIsDeleteDialogOpen,
-    voucherTypeToDelete,
+    countryToDelete,
     setIsModalOpen,
     page,
     search,

@@ -8,7 +8,7 @@ import {
   EnumApiDocumentType,
   fetchDocumentType,
   updateDocumentType,
-} from '@/services/General/documentTypeService';
+} from '@/services';
 import useSWR from 'swr';
 import { toast } from '@/hooks';
 import { Button } from '@/components';

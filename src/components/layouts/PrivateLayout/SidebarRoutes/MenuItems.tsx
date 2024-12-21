@@ -1,5 +1,5 @@
 import { TMenuItem } from '@/components/layouts/PrivateLayout/SidebarRoutes/types/menuItem';
-import { LayoutDashboard, Settings, Users, FileText } from 'lucide-react';
+import { LayoutDashboard, Settings } from 'lucide-react';
 
 export const menuItems: TMenuItem[] = [
   {
@@ -18,6 +18,15 @@ export const menuItems: TMenuItem[] = [
       {
         title: 'Tipos de comprobantes',
         href: '/general/voucher-types',
+      },
+      {
+        title: 'Direcciones',
+        submenu: [
+          {
+            title: 'Países',
+            href: '/general/address/countries',
+          },
+        ],
       },
     ],
   },
